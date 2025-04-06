@@ -1,5 +1,4 @@
 using System.Data;
-using System.Security.Cryptography.X509Certificates;
 
 class ToneRowMatrix{
     private List<int> _baseRow = new List<int>();
@@ -133,9 +132,17 @@ class ToneRowMatrix{
     public void MakeRows(){
         string keepGoing = "";
         bool hand = true;
+        int counter = 0;
+        string handType;
         Console.WriteLine("Type C to create midi, X to quit, or Z to generate a random midi. (H for more info)");
         while (keepGoing.ToLower() != "x"){
-            Console.Write("Choose row type ([P]rime, [I]nverse, [R]etrograde, [RI]nverse, [E]mpty): ");
+            if (hand){
+                handType = "right";
+                counter++;
+            } else {
+                handType = "left";
+            }
+            Console.Write($"Choose row {counter} for {handType} hand ([P]rime, [I]nverse, [R]etrograde, [RI]nverse, [E]mpty): ");
             keepGoing = Console.ReadLine();
             if (keepGoing.ToLower() == "p"){
                 Prime newRow = new Prime();
@@ -154,7 +161,7 @@ class ToneRowMatrix{
                 MakeRow(newRow, hand);
                 hand = !hand;
             } else if (keepGoing.ToLower() == "c"){
-                if (_midiDataRight.Count() == 0){ // if there is no data, it doesn't break
+                if (_midiDataRight.Count() == 0){ // if there is no data, the midi generator breaks without this logic
                         Prime newRow = new Prime();
                         newRow.CreateEmptyRow();
                         _midiDataRight.Add(newRow);
@@ -178,7 +185,7 @@ class ToneRowMatrix{
                 keepGoing = "x";
                 Random rnd = new Random();
                 int number = 1;
-                for (int h = 0; h < 8; h++){
+                for (int h = 0; h < 6; h++){
                     if (number == 1){
                         Prime newRow = new Prime();
                         MakeRandomRow(newRow, hand, rnd, h);
@@ -210,8 +217,8 @@ class ToneRowMatrix{
                     _midiDataLeft.Add(newRow);
                 }
                 hand = !hand;
-            } else if (keepGoing.ToLower() == "h"){ //music nerd info - this is highly simplified
-                Console.WriteLine("This is my 12 tone serialism midi generator.");
+            } else if (keepGoing.ToLower() == "h"){ //music nerd info - this is somewhat simplified but hopefully it gets the point across!
+                Console.WriteLine("This is my 12 tone total serialism midi generator.");
                 Console.WriteLine("It is based on a method of composition developed by Pierre Boulez in the early 1950s.");
                 Console.WriteLine("What is 12 tone serialism?");
                 Console.WriteLine(" - It is a type of post-tonal music designed to give the composer full control.");
@@ -219,6 +226,7 @@ class ToneRowMatrix{
                 Console.WriteLine(" - You then generate a matrix based on that tone row (don't worry about how)");
                 Console.WriteLine(" - From the matrix, you can pick four types of tone rows:");
                 Console.WriteLine("   - Prime (row), Inverse (column), Retrograde (reverse row), Retrograde Inverse (reverse column)");
+                Console.WriteLine("   - The number of a row is determined by the leftmost or topmost pitch (p0 is not row 0,\n     it's the row that starts with 0)");
                 Console.WriteLine(" - You pick a tone row and add it to the music.");
                 Console.WriteLine(" - The result will sound very random, even more than if the notes are truly randomly generated");
                 Console.WriteLine("This program takes 12 tone serialism a step further, with what is called Total Serialism.");
@@ -249,8 +257,8 @@ class ToneRowMatrix{
         }  
     }
     private void MakeRandomRow(ToneRow newRow, bool hand, Random rnd, int i){
-        if (i == 0){ //traditionally you start a piece with P0, this isn't fully necessary though
-            newRow.SetToneRow(this, 0);
+        if (i == 0){ //The first row in the piece should be the first row in the matrix.
+            newRow.SetToneRow(this, _matrix[0][0]);
         } else {
             newRow.SetToneRow(this, rnd.Next(0,12));
         }

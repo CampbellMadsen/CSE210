@@ -6,11 +6,12 @@ abstract class ToneRow{
     public abstract void SetToneRow(ToneRowMatrix matrix, int i);
     public void CreateEmptyRow(){
         for (int i = 0; i < 12; i++){
-            _toneRow.Add(13);
+            _toneRow.Add(13); // 13 doesn't correspond to any actual note, 
+            // so no note gets chosen when generating the midi
             _rhythmRow.Add(i);
         }
     }
-    public List<int> GetToneRow(){
+    public List<int> GetToneRow(){ //Commented stuff is for debug purposes
         //     foreach (int j in _toneRow) {
         //     Console.Write($"{j},");
         // }

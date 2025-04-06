@@ -36,11 +36,11 @@ class MidiOutput{
         }
     }
     private void CreateMidiData(List<int> notes, List<int> rhythms){
-        for (int currentIndex = 0; currentIndex < notes.Count(); currentIndex++){
-            for (int j = 0; j < notes.Count(); j++){ 
+        for (int currentIndex = 0; currentIndex < notes.Count(); currentIndex++){ //iterate through a tone row
+            for (int j = 0; j < notes.Count(); j++){ //determine which note is being played
                 if (notes[currentIndex] == j){
-                    for (int k = 1; k < rhythms[currentIndex] + 1; k++){
-                        if (rhythms[currentIndex] == 1){
+                    for (int k = 1; k < rhythms[currentIndex] + 1; k++){//determine length of notes
+                        if (rhythms[currentIndex] == 1){//logic to determine held notes
                             _noteList[j].AddNote("|");
                         } else if (rhythms[currentIndex] != 1 && k == 1){
                             _noteList[j].AddNote("[");
@@ -78,6 +78,12 @@ class MidiOutput{
         Pattern pattern1 = new PatternBuilder()
         .SetNoteLength(MusicalTimeSpan.Sixteenth)
         .Anchor()
+        // DryWetMidi has a piano roll editor, which converts strings into music.
+        // All of the logic above generates strings for each individual note
+        // = - don't play
+        // | - short note
+        // [ - start held note
+        // ] - end held note
         .PianoRoll(@$"
             C4   {noteStrings[0]}
             C#4  {noteStrings[1]}
@@ -90,7 +96,7 @@ class MidiOutput{
             G#4  {noteStrings[8]}
             A4   {noteStrings[9]}
             A#4  {noteStrings[10]}
-            B4   {noteStrings[11]}")
+            B4   {noteStrings[11]}") //Creates right hand midi data
         .Build();
         TrackChunk trackChunk1 = pattern1.ToTrackChunk(TempoMap.Default);
         Pattern pattern2 = new PatternBuilder()
@@ -107,8 +113,7 @@ class MidiOutput{
             G#3  {noteStrings[20]}
             A3   {noteStrings[21]}
             A#3  {noteStrings[22]}
-            B3   {noteStrings[23]}"
-        )
+            B3   {noteStrings[23]}")//creates left hand midi data
         .Build();
         TrackChunk trackChunk2 = pattern2.ToTrackChunk(TempoMap.Default);
         MidiFile midifile = new MidiFile(trackChunk1, trackChunk2);
