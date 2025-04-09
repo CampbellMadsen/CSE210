@@ -10,20 +10,24 @@ class Activity{
         _name = name;
         _description = desc;
     }
-    public void DisplaySpinner(){
-        Console.WriteLine("Get Ready...");
-        for (int i = 0; i < 15; i++){
+    public void DisplaySpinner(int time){
+        for (int i = 0; i < time; i++){
             Console.Write(_spinnerFrames[i % 3]);
-            Thread.Sleep(750);
+            Thread.Sleep(400);
             Console.Write("\b");
         }
+        Console.Write(" ");
 
     }
-    public void RunActivity(){
+    public int GetSeconds(){
+        return _seconds;
+    }
+    public virtual void RunActivity(){
         Console.WriteLine($"Wecome to the {_name} activity!\n");
         Console.WriteLine($"{_description}\n");
         Console.Write("How long, in seconds, would you like your session? ");
         _seconds = int.Parse(Console.ReadLine());
-        DisplaySpinner();
+        Console.WriteLine("Get Ready...");
+        DisplaySpinner(5);
     }
 }

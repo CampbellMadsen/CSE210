@@ -74,7 +74,6 @@ class MidiOutput{
             // Console.WriteLine(i+12);
             // Console.WriteLine(noteStrings[i+12]);
         }
-        
         Pattern pattern1 = new PatternBuilder()
         .SetNoteLength(MusicalTimeSpan.Sixteenth)
         .Anchor()
